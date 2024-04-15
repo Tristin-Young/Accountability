@@ -1,0 +1,11 @@
+Tasking to still be completed:
+
+Drink form - select portion of form for drink type
+To-Do form - Full implementation
+Summary page - Full implementation
+Navigation bar
+Save data
+
+View for web
+View for iOS
+View for Android

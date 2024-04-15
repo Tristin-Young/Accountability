@@ -1,10 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import FoodScreen from './screens/FoodScreen';
+import DrinkScreen from './screens/DrinkScreen';
+import TodoScreen from './screens/TodoScreen';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+
+      {/* <FoodScreen /> */}
+      {/* <DrinkScreen /> */}
+      <TodoScreen />
       <StatusBar style="auto" />
     </View>
   );
@@ -13,8 +19,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    //backgroundColor: 'rgba(255, 0, 0, 0.1)',
     alignItems: 'center',
-    justifyContent: 'center',
-  },
+
+  }
 });
