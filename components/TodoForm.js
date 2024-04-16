@@ -2,7 +2,7 @@ import react, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Pressable } from "react-native";
 import { Picker } from "react-native-picker"; // Import Picker
 import DateTimePicker from '@react-native-community/datetimepicker';
-
+import { Dropdown } from 'react-native-material-dropdown-v2-fixed';
 // DateTimePickerAndroid.open(params: AndroidNativeProps)
 // DateTimePickerAndroid.dismiss(mode: AndroidNativeProps['mode'])
 export default function TodoForm({ onAddTodo = f => f }) {
@@ -25,13 +25,14 @@ export default function TodoForm({ onAddTodo = f => f }) {
         console.log(name, description, dueDate, priority);
         setName("");
         setDescription("");
-        setDueDate("");
+        setDueDate(new Date());
         setPriority("Low");
     }
 
 
     const onChange = (e, selectedDate) => {
-        setDueDate(selectedDate);
+        const currentDate = selectedDate || dueDate;
+        setDueDate(currentDate); // currentDate is guaranteed to be a Date object
         setShow(false);
         console.log("OnChange reached - setting show to false");
     };
@@ -63,19 +64,13 @@ export default function TodoForm({ onAddTodo = f => f }) {
                 value={description}
                 onChangeText={setDescription}
             />
-            {/* Priority Picker */}
-            {/* <Picker
-                selectedValue={priority}
-                style={styles.dropdown}
-                onValueChange={(itemValue) =>
-                    setPriority(itemValue)
-                }>
-                <Picker label="Low" value="Low" />
-                <Picker label="Medium" value="Medium" />
-                <Picker label="High" value="High" />
-                <Picker label="URGENT" value="URGENT" />
-            </Picker> */}
-            <Button onPress={() => showDatepicker()} title="Show date picker!" />
+            <Dropdown
+                icon='arrow-drop-down'
+                label='Priority'
+                data={[{ value: 'Low' }, { value: 'Medium' }, { value: 'High' }, { value: 'ASAP' }]}
+                onChangeText={setPriority}
+            />
+            <Button style={styles.button} onPress={() => showDatepicker()} title="Change Due Date" />
             {show && (
                 <DateTimePicker
                     value={dueDate}
@@ -84,56 +79,93 @@ export default function TodoForm({ onAddTodo = f => f }) {
                     onChange={onChange}
                 />
             )}
-            <Text>{dueDate.toLocaleDateString()}</Text>
+            <Text style={styles.itemText}>{dueDate instanceof Date ? dueDate.toLocaleDateString() : 'No date selected'}</Text>
+
             <Pressable style={styles.button} onPress={handleSubmit}>
                 <Text style={styles.buttonText}>Submit</Text>
             </Pressable>
         </View>
     );
 }
-
 const styles = StyleSheet.create({
     container: {
-        //backgroundColor: 'rgba(255,0,0,0.1)',
         flex: 1,
-
+        backgroundColor: '#f4f4f8',  // Light grey background
+        padding: 20,
     },
-    title: {
-        //backgroundColor: 'rgba(0,255,0,0.1)',
-        fontSize: 28,
-        fontWeight: 'bold',
-        textAlign: 'center',
+    header: {
+        fontSize: 24,
+        fontWeight: '600',  // Semi-bold
+        color: '#333',  // Dark grey for text
+        paddingBottom: 15,
+        borderBottomWidth: 2,
+        borderColor: '#e1e1e5',  // Light grey border
+        marginBottom: 20,
     },
-    description: {
-        //backgroundColor: 'rgba(0,0,255,0.1)',
+    subtitle: {
+        fontSize: 20,
+        fontWeight: '600',
+        color: '#555',  // Medium grey for sub-headers
+        marginTop: 20,
+        marginBottom: 10,
+    },
+    itemText: {
         fontSize: 16,
-        textAlign: 'center',
-    },
-    input: {
-        //backgroundColor: 'rgba(255,0,0,0.1)',
-        margin: 10,
+        color: '#666',  // Slightly lighter grey for items
+        marginTop: 5,
         padding: 10,
+        backgroundColor: '#ffffff',  // White background for items
         borderWidth: 1,
-        borderColor: 'black',
-        borderRadius: 5,
+        borderColor: '#e1e1e5',  // Light grey borders for items
+        borderRadius: 10,  // Rounded corners for items
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     button: {
-        //backgroundColor: 'rgba(0,255,0,0.1)',
-        margin: 10,
-        padding: 10,
-        borderRadius: 5,
-        backgroundColor: 'blue',
+        backgroundColor: '#007bff',  // Bootstrap primary blue
+        paddingVertical: 12,
+        paddingHorizontal: 25,
+        borderRadius: 8,
+        marginTop: 10,
     },
     buttonText: {
-        color: 'white',
+        fontSize: 18,
+        color: '#ffffff',  // White text for buttons
+        fontWeight: '500',
+        alignSelf: 'center',
+    },
+    input: {
         fontSize: 16,
-        textAlign: 'center',
+        borderColor: '#ccc',  // Lighter grey for input borders
+        borderWidth: 1,
+        marginBottom: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        backgroundColor: '#fff',
+        borderRadius: 8,
     },
     dropdown: {
-        height: 40,
-        margin: 10,
-        paddingLeft: 10,
-        borderWidth: 2,
-        borderRadius: 2,
-    },
+        fontSize: 16,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        marginBottom: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        backgroundColor: '#fff',
+        borderRadius: 8,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.22,
+        shadowRadius: 2.22,
+        elevation: 3,
+    }
 });

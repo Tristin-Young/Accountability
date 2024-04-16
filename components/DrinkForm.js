@@ -1,18 +1,19 @@
-import react, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, Pressable, Select, Icon } from "react-native";
-import SelectDropdown from 'react-native-select-dropdown';
+import React, { useState, useContext } from 'react';
+import { View, Text, TextInput, StyleSheet, Pressable } from 'react-native';
+import { Dropdown } from 'react-native-material-dropdown-v2-fixed';
+import { DrinksContext } from '../contexts/DrinksContext';
 
-export default function DrinkForm({ onAddDrink = f => f }) {
+function DrinkForm() {
+    const { addDrink } = useContext(DrinksContext);
     const [name, setName] = useState("");
-    // const [category, setCategory] = useState("");
+    const [category, setCategory] = useState("");
     const [calories, setCalories] = useState("");
     const [description, setDescription] = useState("");
 
     const handleSubmit = () => {
-        onAddDrink({ name, calories, description });
-        console.log(name, calories, description);
+        addDrink({ name, category, calories, description });
         setName("");
-        // setCategory("");
+        setCategory("");
         setCalories("");
         setDescription("");
     };
@@ -20,47 +21,22 @@ export default function DrinkForm({ onAddDrink = f => f }) {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Drink Form</Text>
-            <Text style={styles.description}>For basic daily drink tracking</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Name..."
                 value={name}
                 onChangeText={setName}
             />
-            {/* Use SelectDropdown for category selection */}
-            {/* <SelectDropdown
-                data={["Water", "Coffee/Tea", "Soda", "Alcohol"]}
-                onSelect={(selectedItem, index) => {
-                    console.log(selectedItem, index);
-                }}
-                renderButton={(selectedItem, isOpened) => {
-                    return (
-                        <View style={styles.dropdownButton}>
-                            {selectedItem && (
-                                <Icon name={selectedItem.icon} style={styles.dropdownButtonIconStyle} />
-                            )}
-                            <Text style={styles.dropdownButtonTxtStyle}>
-                                {(selectedItem && selectedItem.title) || 'Select your mood'}
-                            </Text>
-                            <Icon name={isOpened ? 'chevron-up' : 'chevron-down'} style={styles.dropdownButtonArrowStyle} />
-                        </View>
-                    );
-                }}
-                renderItem={(item, index, isSelected) => {
-                    return (
-                        <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#D2D9DF' }) }}>
-                            <Icon name={item.icon} style={styles.dropdownItemIconStyle} />
-                            <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
-                        </View>
-                    );
-                }}
-                showsVerticalScrollIndicator={false}
-                dropdownStyle={styles.dropdownMenuStyle}
-            /> */}
+            <Dropdown
+                icon='arrow-drop-down'
+                label='Category'
+                data={[{ value: 'Water' }, { value: 'Coffee/Tea' }, { value: 'Soda' }, { value: 'Alcohol' }, { value: 'Misc' }]}
+                onChangeText={setCategory}
+            />
             <TextInput
                 style={styles.input}
                 placeholder="Calories..."
-                keyboardType="numeric" // Ensures numeric input for calories
+                keyboardType="numeric"
                 value={calories}
                 onChangeText={setCalories}
             />
@@ -77,44 +53,88 @@ export default function DrinkForm({ onAddDrink = f => f }) {
     );
 }
 
-// Continue using your existing styles
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#f4f4f8',  // Light grey background
+        padding: 20,
     },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        textAlign: 'center',
+    header: {
+        fontSize: 24,
+        fontWeight: '600',  // Semi-bold
+        color: '#333',  // Dark grey for text
+        paddingBottom: 15,
+        borderBottomWidth: 2,
+        borderColor: '#e1e1e5',  // Light grey border
+        marginBottom: 20,
     },
-    description: {
-        fontSize: 18,
-        paddingHorizontal: 10,
-        textAlign: 'center',
+    subtitle: {
+        fontSize: 20,
+        fontWeight: '600',
+        color: '#555',  // Medium grey for sub-headers
+        marginTop: 20,
+        marginBottom: 10,
     },
-    input: {
-        height: 40,
-        margin: 10,
-        paddingLeft: 10,
-        borderWidth: 2,
+    itemText: {
+        fontSize: 16,
+        color: '#666',  // Slightly lighter grey for items
+        marginTop: 5,
+        padding: 10,
+        backgroundColor: '#ffffff',  // White background for items
+        borderWidth: 1,
+        borderColor: '#e1e1e5',  // Light grey borders for items
+        borderRadius: 10,  // Rounded corners for items
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     button: {
-        backgroundColor: 'rgba(0,0,0,0.1)',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: 40,
-        margin: 10,
-        borderWidth: 2,
-        borderRadius: 5,
+        backgroundColor: '#007bff',  // Bootstrap primary blue
+        paddingVertical: 12,
+        paddingHorizontal: 25,
+        borderRadius: 8,
+        marginTop: 10,
     },
     buttonText: {
         fontSize: 18,
-        fontWeight: 'bold',
+        color: '#ffffff',  // White text for buttons
+        fontWeight: '500',
+        alignSelf: 'center',
+    },
+    input: {
+        fontSize: 16,
+        borderColor: '#ccc',  // Lighter grey for input borders
+        borderWidth: 1,
+        marginBottom: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        backgroundColor: '#fff',
+        borderRadius: 8,
     },
     dropdown: {
-        margin: 10,
+        fontSize: 16,
+        borderColor: '#ccc',
         borderWidth: 1,
-        borderRadius: 5,
-        // Additional styling for the dropdown button if needed
-    },
+        marginBottom: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        backgroundColor: '#fff',
+        borderRadius: 8,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.22,
+        shadowRadius: 2.22,
+        elevation: 3,
+    }
 });
+
+
+export default DrinkForm;
